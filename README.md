@@ -1,67 +1,70 @@
-**Cloud-Native Monitoring Application**
-A robust, cloud-native monitoring solution built with Python and Flask, containerized with Docker, and deployed on Amazon EKS (Elastic Kubernetes Service). This project demonstrates a full CI/CD-ready workflow for deploying applications to AWS using infrastructure-as-code principles in Python.
+# Cloud-Native Monitoring Application ☁️
 
-*🚀 Features*
-Flask Web App: Lightweight backend for monitoring services.
-Dockerized Architecture: Fully containerized for environment consistency.
-AWS ECR Integration: Automated image management via Amazon Elastic Container Registry.
-Kubernetes Orchestration: Automated deployment and scaling using Amazon EKS.
-Helm Support: Ready for package management via Helm charts.
+A production-ready monitoring solution built with **Python** and **Flask**, containerized with **Docker**, and orchestrated on **Amazon EKS (Elastic Kubernetes Service)**. This project demonstrates a complete cloud-native workflow, including automated image management via **Amazon ECR**.
 
-*🛠️ Tech Stack*
-Backend: Python 3.x, Flask
-Containerization: Docker
-Cloud Provider: AWS (ECR, EKS)
-Orchestration: Kubernetes (Boto3 & Kubernetes Python Client)
-Package Management: uv / pip
 
-*📋 Prerequisites*
-Before running this project, ensure you have the following installed and configured:
-AWS CLI: Configured with your credentials (aws configure).
-Docker: To build and push images.
-kubectl: To interact with the EKS cluster.
-Python 3.10+
 
-🔧 Installation & Setup
-Clone the repository:
+## 🛠️ Tech Stack
+* **Backend:** Python 3.10+ (Flask)
+* **Infrastructure:** AWS EKS, AWS ECR
+* **DevOps:** Docker, Kubernetes (Client SDK), Helm
+* **Package Management:** `uv` / `pip`
 
-Bash
+## 📂 Project Structure
+* `app.py`: Main Flask application.
+* `ecr.py`: Handles AWS ECR repository creation and image uploads.
+* `eks.py`: Programmatically manages Kubernetes deployments and services.
+* `deployment.yaml` & `service.yaml`: Kubernetes manifests for manual or scripted deployment.
+* `Dockerfile`: Container configuration for the Flask app.
 
-git clone https://github.com/KhushiKachhawaha14/cloud-native-monitoring-app.git
+## 📋 Prerequisites
+* **AWS CLI** configured (`aws configure`).
+* **Docker** installed and running.
+* **kubectl** installed for cluster management.
+* **Python 3.x** installed.
+
+## 🚀 Getting Started
+
+### 1. Clone & Install
+```bash
+git clone [https://github.com/KhushiKachhawaha14/cloud-native-monitoring-app.git](https://github.com/KhushiKachhawaha14/cloud-native-monitoring-app.git)
 cd cloud-native-monitoring-app
-Set up virtual environment:
-
-Bash
-
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-🚢 Deployment Guide
-1. Create ECR Repository & Push Image
-Run the ECR script to create your repository and push the Docker image:
+```
 
-Bash
+2. AWS Setup & Deployment
+Run the ECR script to push your image:
 
+```bash
 python ecr.py
-2. Deploy to Amazon EKS
-Once the image is in ECR, deploy the application to your Kubernetes cluster:
+```
+Deploy the application to your EKS cluster:
 
-Bash
-
+```bash
 python eks.py
-3. Verify Deployment
-Check the status of your pods and services:
+```
 
-Bash
+To prove your deployment worked, add a small section at the end of the "Getting Started" area. This shows you know how to validate your work:
+
+3. Verify the Deployment
+
+```bash
 
 kubectl get pods
 kubectl get svc
+``` 
+🔒 Security Best Practices
+To avoid hardcoding sensitive information like AWS Account IDs or Regions (as seen in eks.py), it is recommended to use environment variables.
 
-*📂 Project Structure*
-app.py: Main Flask application logic.
-ecr.py: Script to handle AWS ECR operations.
-eks.py: Kubernetes deployment script using the Python client.
-deployment.yaml: K8s Deployment manifest.
-service.yaml: K8s Service manifest for load balancing.
+Example Update for eks.py: Instead of a hardcoded string, use:
+```bash
 
-Dockerfile: Instructions for building the application image.
+import os
+account_id = os.getenv('AWS_ACCOUNT_ID')
+image_uri = f"{account_id}[.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo](https://.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo)"
+
+```
+👥 Credits
+Original Developer: N4si
+
+Implementation & Deployment: Khushi Kachhawaha
