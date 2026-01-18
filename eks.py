@@ -1,14 +1,17 @@
-#create deployment and service
 from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 
-# Load Kubernetes configuration
+# 1. Load Kubernetes configuration
+# This connects to your current context (Minikube)
 config.load_kube_config()
 
 # Create a Kubernetes API client
 api_client = client.ApiClient()
 
-# Define the deployment
+# Define the Deployment
 deployment = client.V1Deployment(
+    api_version="apps/v1",
+    kind="Deployment",
     metadata=client.V1ObjectMeta(name="my-flask-app"),
     spec=client.V1DeploymentSpec(
         replicas=1,
@@ -20,37 +23,51 @@ deployment = client.V1Deployment(
                 labels={"app": "my-flask-app"}
             ),
             spec=client.V1PodSpec(
+                # --- ADDED THE SECRET HERE ---
+                image_pull_secrets=[client.V1LocalObjectReference(name="ecr-registry-helper")],
                 containers=[
                     client.V1Container(
                         name="my-flask-container",
-                        image="568373317874.dkr.ecr.us-east-1.amazonaws.com/my_monitoring_app_image:latest",
+                        image="982068586284.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo:latest",
                         ports=[client.V1ContainerPort(container_port=5000)]
                     )
                 ]
             )
         )
-    )
-)
+    ))
 
 # Create the deployment
-api_instance = client.AppsV1Api(api_client)
-api_instance.create_namespaced_deployment(
-    namespace="default",
-    body=deployment
-)
+api_instance_apps = client.AppsV1Api(api_client)
+print("Creating Deployment...")
+try:
+    api_instance_apps.create_namespaced_deployment(
+        namespace="default",
+        body=deployment)
+    print("Deployment 'my-flask-app' created successfully.")
+except ApiException as e:
+    # If it already exists, we might want to replace it or just notify
+    print(f"Note: {e.reason} ({e.status})")
 
-# Define the service
+# Define the Service
 service = client.V1Service(
+    api_version="v1",
+    kind="Service",
     metadata=client.V1ObjectMeta(name="my-flask-service"),
     spec=client.V1ServiceSpec(
         selector={"app": "my-flask-app"},
-        ports=[client.V1ServicePort(port=5000)]
-    )
-)
+        ports=[client.V1ServicePort(port=5000)],
+        type="ClusterIP" 
+    ))
 
 # Create the service
-api_instance = client.CoreV1Api(api_client)
-api_instance.create_namespaced_service(
-    namespace="default",
-    body=service
-)
+api_instance_core = client.CoreV1Api(api_client)
+print("Creating Service...")
+try:
+    api_instance_core.create_namespaced_service(
+        namespace="default",
+        body=service)
+    print("Service 'my-flask-service' created successfully.")
+except ApiException as e:
+    print(f"Note: {e.reason} ({e.status})")
+
+print("Deployment and Service creation sequence complete.")

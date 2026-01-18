@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-flask-app
+  labels:
+    app: flask-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-monitoring
+  template:
+    metadata:
+      labels:
+        app: flask-monitoring
+    spec:
+      # --- START OF FIX ---
+      imagePullSecrets:
+        - name: ecr-read-secret
+      # --- END OF FIX ---
+      containers:
+        - name: my-flask-app
+          # IMPORTANT: Use the image name you successfully built
+          image: "982068586284.dkr.ecr.us-east-1.amazonaws.com/cloud-native-monitoring-app:latest"
+          ports:
+            - containerPort: 5000
+
+          # 🟢 READINESS PROBE: Is the app ready to serve traffic? (Uses /readyz)
+          # This prevents the Service from routing traffic to a Pod that is still initializing.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 5000
+            initialDelaySeconds: 15 # Give Gunicorn workers time to spin up
+            periodSeconds: 5 # Check frequently
+            failureThreshold: 5 # If it fails 5 times, it's considered unready
+
+          # 🚨 LIVENESS PROBE: Is the app process alive and responding? (Uses /healthz)
+          # If this fails, Kubernetes restarts the container, enabling self-healing.
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            initialDelaySeconds: 20 # Start checking after the app should definitely be ready
+            periodSeconds: 10 # Check every 10 seconds
+            timeoutSeconds: 3
+          # --- Resource Limits (Best practice for EKS) ---
+          resources:
+            # Both 'limits' and 'requests' must be indented one level under 'resources'
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+            requests:
+              memory: "64Mi"
+              cpu: "100m"

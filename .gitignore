@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+helm-v3.19.2-windows-amd64.tar.gz
+windows-amd64/
