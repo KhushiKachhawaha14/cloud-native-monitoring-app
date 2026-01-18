@@ -1,8 +1,24 @@
+import os
+from dotenv import load_dotenv
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 
-# 1. Load Kubernetes configuration
-# This connects to your current context (Minikube)
+# 1. Load environment variables from .env file
+load_dotenv()
+
+# Get Account ID from environment variable
+# Use a fallback or raise an error if not found
+account_id = os.getenv('AWS_ACCOUNT_ID')
+
+if not account_id:
+    print("Error: AWS_ACCOUNT_ID not found in .env file.")
+    exit(1)
+
+# Construct the Image URI dynamically
+image_uri = f"{account_id}.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo:latest"
+
+# 2. Load Kubernetes configuration
+# This connects to your current context (EKS/Minikube)
 config.load_kube_config()
 
 # Create a Kubernetes API client
@@ -23,12 +39,11 @@ deployment = client.V1Deployment(
                 labels={"app": "my-flask-app"}
             ),
             spec=client.V1PodSpec(
-                # --- ADDED THE SECRET HERE ---
                 image_pull_secrets=[client.V1LocalObjectReference(name="ecr-registry-helper")],
                 containers=[
                     client.V1Container(
                         name="my-flask-container",
-                        image="982068586284.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo:latest",
+                        image=image_uri,  # Using the dynamic URI here
                         ports=[client.V1ContainerPort(container_port=5000)]
                     )
                 ]
@@ -45,7 +60,6 @@ try:
         body=deployment)
     print("Deployment 'my-flask-app' created successfully.")
 except ApiException as e:
-    # If it already exists, we might want to replace it or just notify
     print(f"Note: {e.reason} ({e.status})")
 
 # Define the Service
