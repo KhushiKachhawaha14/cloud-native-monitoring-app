@@ -64,6 +64,31 @@ account_id = os.getenv('AWS_ACCOUNT_ID')
 image_uri = f"{account_id}[.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo](https://.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo)"
 
 ```
+## 📊 Deployment Verification
+
+To ensure the application is correctly orchestrated, I verified the state of the AWS infrastructure and the Kubernetes cluster.
+
+### AWS Infrastructure
+* **Amazon EKS:** Cluster `cloud-native-cluster` is active and running Kubernetes version 1.34.
+![alt text](<Screenshot 2026-01-16 122908.png>)
+
+* **Amazon ECR:** Private repository `my-cloud-native-repo` successfully hosting the `latest` Docker image.
+![alt text](<Screenshot 2026-01-16 122928.png>)
+![alt text](<Screenshot 2026-01-16 122937.png>)
+
+### Kubernetes Status
+Running `kubectl get pods` confirms the Flask application is healthy and operational:
+![Kubernetes Pod Status]![alt text](<Screenshot 2026-01-16 124243.png>)
+
+### Application Output
+The monitoring app is accessible and serving metrics:
+* **Health Check:** `{"status": "UP"}`
+![alt text](<Screenshot 2026-01-16 123440.png>) 
+![alt text](<Screenshot 2026-01-16 123449.png>)
+
+* **Metrics:** Exporting Prometheus-formatted system metrics.
+![alt text](<Screenshot 2026-01-16 123508.png>)
+
 👥 Credits
 Original Developer: N4si
 
