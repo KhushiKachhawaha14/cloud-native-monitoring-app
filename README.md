@@ -1,5 +1,5 @@
 
-# ☁️ Cloud-Native Monitoring Application 
+# Cloud-Native Monitoring Application ☁️  
 
 A production-ready monitoring solution built with **Python** and **Flask**, containerized with **Docker**, and orchestrated on **Amazon EKS (Elastic Kubernetes Service)**. This project demonstrates a complete cloud-native workflow, including automated image management via **Amazon ECR**.
 
