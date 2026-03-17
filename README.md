@@ -1,4 +1,4 @@
-# ☁️ Cloud-Native Monitoring App
+#  ☁️ Cloud-Native Monitoring App
 
 A **production-ready system monitoring application** built with Python/Flask, containerized with Docker, deployed on **Amazon EKS** with Horizontal Pod Autoscaling, and integrated with Prometheus for observability. Demonstrates a complete cloud-native workflow from local development to production deployment.
 
