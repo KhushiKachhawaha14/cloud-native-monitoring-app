@@ -5,16 +5,10 @@ jobs:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4  # Upgrade to v4 for better performance
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 0           # Crucial: Gets the entire history
-      
-      - name: Gitleaks Scan
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          # This 'args' line is the secret sauce. 
-          # It tells Gitleaks to be loud (--verbose) and 
-          # to scan the whole source (--source .)
-          args: detect --verbose --source . --redact
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE}} # Only required for Organizations, not personal accounts.
