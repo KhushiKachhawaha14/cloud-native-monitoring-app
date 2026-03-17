@@ -5,12 +5,9 @@ jobs:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # This is the "arg" that tells it to scan everything
-          
       - uses: gitleaks/gitleaks-action@v2
+        with:
+          # This forces Gitleaks to scan all files, not just the diff
+          args: detect --no-git --source . --verbose --redact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Do NOT add 'args' here. Let the action use its defaults.
-    
