@@ -91,11 +91,16 @@ jobs:
           echo "Pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   # ── Job 3: Deploy to EKS ───────────────────────────────────────
+  # ℹ️  EKS is provisioned on-demand via Terraform to manage costs.
+  #     Set the DEPLOY_TO_EKS secret to 'true' to enable this job.
   deploy:
     name: 🚀 Deploy to EKS
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      vars.DEPLOY_TO_EKS == 'true'
 
     steps:
       - name: Checkout code
