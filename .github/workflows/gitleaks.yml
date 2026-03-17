@@ -8,6 +8,6 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         with:
           # This forces Gitleaks to scan all files, not just the diff
-          args: detect --no-git --source . --verbose --redact
+          args: detect --source . --verbose --redact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
