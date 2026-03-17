@@ -70,7 +70,7 @@ account_id = os.getenv('AWS_ACCOUNT_ID')
 image_uri = f"{account_id}[.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo](https://.dkr.ecr.us-east-1.amazonaws.com/my-cloud-native-repo)"
 
 ```
-const KEY = "AKIA6O5OR7YV7EXAMPLE123"
+AWS_SECRET_ACCESS_KEY = "AKIA6O5OR7YV7EXAMPLE123"
 ## 📊 Deployment Evidence
 
 To verify the successful deployment of the monitoring application, I monitored both the AWS Infrastructure and the Kubernetes cluster state.
